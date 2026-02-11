@@ -15,7 +15,7 @@ import org.json.simple.JSONObject;
 import io.restassured.response.Response;
 
 public class ExcelReader {
-	public static final String ProjectId = "5";
+	public static final String ProjectId = "7";
 
 	public static void main(String[] args) throws MalformedURLException, IOException, APIException {
 
@@ -30,6 +30,13 @@ public class ExcelReader {
 
 			Sheet nsheet;
 			System.out.println(sheetCounts);
+			Map<String, String> suiteDetail = new HashMap<String, String>();
+			Map<String, String> sectionDetail = new HashMap<String, String>();
+
+			// Test Case Map Objects
+			Map<String, Object> testDetails = new HashMap<String, Object>();
+			Map<String, String> steps = new HashMap<String, String>();
+			List<Map<String, String>> testSteps = new ArrayList<Map<String, String>>();
 
 			for (int i = 1; i < sheetCounts; i++) {
 				TestRail testRail = new TestRail();
@@ -47,17 +54,13 @@ public class ExcelReader {
 					String suiteName = i + "_Inventory_" + suiteTitle;
 					System.out.println("== Adding Test Suite:   " + suiteName + "  ==");
 
-					Map<String, String> suiteDetail = new HashMap<String, String>();
-
 					suiteDetail.put("name", suiteName);
 					suiteDetail.put("description", "");
 					Response suiteResp = testRail.addSuite(ProjectId, suiteDetail);
 					String suiteID = suiteResp.jsonPath().getString("id");
-
+					suiteDetail.clear();
 					/* ========================================================================= */
 					// Will be executed Once Per Sheet Section will Be created
-
-					Map<String, String> sectionDetail = new HashMap<String, String>();
 
 					sectionDetail.put("name", "Section");
 					sectionDetail.put("description", "");
@@ -66,6 +69,7 @@ public class ExcelReader {
 					Response sectionResp = testRail.addSection(ProjectId, sectionDetail);
 
 					String sectionID = sectionResp.jsonPath().getString("id");
+					sectionDetail.clear();
 
 					/* ======================================================================== */
 
@@ -77,22 +81,18 @@ public class ExcelReader {
 						Row testRow = nsheet.getRow(testRowCount);
 						if (testRow == null || testRow.getCell(1) == null || testRow.getCell(2) == null
 								|| testRow.getCell(3) == null || testRow.getCell(4) == null)
-								continue;
+							continue;
 						else if (testRow.getCell(1).getStringCellValue().isBlank()
 								|| testRow.getCell(2).getStringCellValue().isBlank()
 								|| testRow.getCell(3).getStringCellValue().isBlank()
 								|| testRow.getCell(4).getStringCellValue().isBlank())
 							continue;
-							
+
 						String testCaseId = testRow.getCell(1).toString();
 						String testCaseAction = testRow.getCell(2).toString();
 						String testNavigationStep = testRow.getCell(3).toString();
 						String testExpectedResult = testRow.getCell(4).toString();
 						String testTitle = sheetName + "-" + testCaseAction;
-
-						Map<String, Object> testDetails = new HashMap<String, Object>();
-						Map<String, String> steps = new HashMap<String, String>();
-						List<Map<String, String>> testSteps = new ArrayList<Map<String, String>>();
 
 						steps.put("content", testNavigationStep);
 						steps.put("expected", testExpectedResult);
@@ -106,7 +106,9 @@ public class ExcelReader {
 						testRail = new TestRail();
 						Response testCaseResp = testRail.addTestCase(sectionID, testDetails);
 //							testCaseResp.prettyPrint();
-
+						testDetails.clear();
+						steps.clear();
+						testSteps.clear();
 						if (!testCaseResp.jsonPath().getString("id").isBlank()) {
 							System.out.println("================Test Case Added Scuccesfully=============");
 						}
