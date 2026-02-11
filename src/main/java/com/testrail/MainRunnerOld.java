@@ -9,7 +9,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-public class MainRunner {
+public class MainRunnerOld {
 	public static final String ProjectId="2";
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

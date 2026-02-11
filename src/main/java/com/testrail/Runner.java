@@ -14,7 +14,7 @@ import org.json.simple.JSONObject;
 
 import io.restassured.response.Response;
 
-public class ExcelReader {
+public class Runner {
 	public static final String ProjectId = "7";
 
 	public static void main(String[] args) throws MalformedURLException, IOException, APIException {
