@@ -1,0 +1,7 @@
+target/
+test-output/
+.settings/
+.classpath
+.project
+.mvn/
+src/main/java/testrail
