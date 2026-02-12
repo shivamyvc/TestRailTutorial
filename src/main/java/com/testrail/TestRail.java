@@ -15,16 +15,25 @@ public class TestRail extends BaseTR {
 	private static String GET_TEST_CASE_TEMPLATE = "/api/v2/get_case_fields";
 	private static String GET_TEST_CASE = "/api/v2/get_case/%s"; // %s substitute Test Case ID
 	private static String ADD_TEST_CASE = "/api/v2/add_case/%s"; // %s substitute Section ID
+	private static String  GET_CASE_FIELDS="/api/v2/get_case_fields";
 
 	// Suite EndPonits
 
 	private static String ADD_SUITE = "/api/v2/add_suite/%s"; // %s substitute project ID
 	private static String ADD_SUITE_SECTION = "/api/v2/add_section/%s"; // %s substitute Project ID
+	
 
 	public TestRail() {
 		baseRequest.headers("Content-Type", "application/json");
 	}
 
+
+	
+	public Response getCaseField() {
+		baseRequest.queryParam(GET_CASE_FIELDS);
+		return GET();
+	}
+	
 	public Response addSuite(String ProjectID, Map<String, String> SuiteDetails) {
 		baseRequest.queryParam(String.format(ADD_SUITE, ProjectID));
 		return POST(SuiteDetails);
